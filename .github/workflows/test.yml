@@ -14,5 +14,5 @@ jobs:
         id: create-pull-request
       - name: Print the branches
         run : |
-          echo ${{steps.create-pull-request.from-branch}}
-          echo ${{steps.create-pull-request.to-branch}}
+          echo ${{steps.create-pull-request.outputs.from-branch}}
+          echo ${{steps.create-pull-request.outputs.to-branch}}
