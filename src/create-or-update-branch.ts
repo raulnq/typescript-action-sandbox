@@ -15,12 +15,10 @@ export async function getAllBranches(
   git: GitCommandManager
 ): Promise<string[]> {
   const branchsResult = await git.exec(['branch', '-r'], true)
-  core.info(`Exit code ${branchsResult.exitCode}`)
   if (branchsResult.exitCode === 0) {
     core.info(branchsResult.stdout)
     return splitLines(branchsResult.stdout)
   } else {
-    core.info(branchsResult.stderr)
     return new Array<string>()
   }
 }

@@ -48,13 +48,11 @@ var WorkingBaseType;
 function getAllBranches(git) {
     return __awaiter(this, void 0, void 0, function* () {
         const branchsResult = yield git.exec(['branch', '-r'], true);
-        core.info(`Exit code ${branchsResult.exitCode}`);
         if (branchsResult.exitCode === 0) {
             core.info(branchsResult.stdout);
             return splitLines(branchsResult.stdout);
         }
         else {
-            core.info(branchsResult.stderr);
             return new Array();
         }
     });
@@ -287,6 +285,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.GitCommandManager = void 0;
 /* eslint-disable @typescript-eslint/no-explicit-any */
+const core = __importStar(__nccwpck_require__(186));
 const exec = __importStar(__nccwpck_require__(514));
 const io = __importStar(__nccwpck_require__(436));
 const path = __importStar(__nccwpck_require__(622));
@@ -525,7 +524,9 @@ class GitCommandManager {
                 ignoreReturnCode: allowAllExitCodes,
                 listeners: {
                     stdout: (data) => {
-                        stdout.push(data.toString());
+                        const row = data.toString();
+                        stdout.push(row);
+                        core.info(row);
                     },
                     stderr: (data) => {
                         stderr.push(data.toString());
