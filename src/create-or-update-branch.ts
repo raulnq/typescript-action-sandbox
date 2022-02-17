@@ -16,9 +16,10 @@ export async function getAllBranches(
 ): Promise<string[]> {
   const branchsResult = await git.exec(['branch', '-r'], true)
   if (branchsResult.exitCode === 0) {
-    // A ref is checked out
+    core.info(branchsResult.stdout)
     return splitLines(branchsResult.stdout)
   } else {
+    core.info(branchsResult.stderr)
     return new Array<string>()
   }
 }
