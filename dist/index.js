@@ -35,7 +35,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.createOrUpdateBranch = exports.tryFetch = exports.getWorkingBaseAndType = exports.WorkingBaseType = void 0;
+exports.createOrUpdateBranch = exports.tryFetch = exports.getWorkingBaseAndType = exports.getAllBranches = exports.WorkingBaseType = void 0;
 /* eslint-disable no-shadow */
 const core = __importStar(__nccwpck_require__(186));
 const uuid_1 = __nccwpck_require__(840);
@@ -45,6 +45,21 @@ var WorkingBaseType;
     WorkingBaseType["Branch"] = "branch";
     WorkingBaseType["Commit"] = "commit";
 })(WorkingBaseType = exports.WorkingBaseType || (exports.WorkingBaseType = {}));
+function getAllBranches(git) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const branchsResult = yield git.exec(['branch', '-r'], true);
+        core.info(`Exit code ${branchsResult.exitCode}`);
+        if (branchsResult.exitCode === 0) {
+            core.info(branchsResult.stdout);
+            return splitLines(branchsResult.stdout);
+        }
+        else {
+            core.info(branchsResult.stderr);
+            return new Array();
+        }
+    });
+}
+exports.getAllBranches = getAllBranches;
 function getWorkingBaseAndType(git) {
     return __awaiter(this, void 0, void 0, function* () {
         const symbolicRefResult = yield git.exec(['symbolic-ref', 'HEAD', '--short'], true);
@@ -583,7 +598,12 @@ function run() {
             const git = yield git_command_manager_1.GitCommandManager.create(repoPath);
             core.startGroup('Checking the base repository state');
             const [workingBase, workingBaseType] = yield (0, create_or_update_branch_1.getWorkingBaseAndType)(git);
-            core.info(`Working base is ${workingBaseType} '${workingBase}'`);
+            core.info(`Working base is ${workingBaseType} '${workingBase}'!!`);
+            const branches = yield (0, create_or_update_branch_1.getAllBranches)(git);
+            core.info('paso');
+            for (const branch of branches) {
+                core.info(branch);
+            }
             core.endGroup();
             core.setOutput('from-branch', workingBaseType);
             core.setOutput('to-branch', workingBase);
