@@ -1,5 +1,6 @@
 /* eslint-disable sort-imports */
 import * as core from '@actions/core'
+import semverRegex from 'semver-regex';
 import * as utils from './utils'
 import {
   getWorkingBaseAndType,
@@ -19,7 +20,11 @@ export async function run(): Promise<void> {
     core.info('fetching')
     const branches = await getAllBranches(git)
     for (const branch of branches) {
-      core.info(branch)
+      if (semverRegex().test(branch)) {
+        core.info(`Valid semver ${branch}'`)
+      } else {
+        core.info(`Invalid semver ${branch}'`)
+      }
     }
     core.endGroup()
 

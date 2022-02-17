@@ -587,10 +587,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.run = void 0;
 /* eslint-disable sort-imports */
 const core = __importStar(__nccwpck_require__(186));
+const semver_regex_1 = __importDefault(__nccwpck_require__(681));
 const utils = __importStar(__nccwpck_require__(918));
 const create_or_update_branch_1 = __nccwpck_require__(363);
 const git_command_manager_1 = __nccwpck_require__(738);
@@ -606,7 +610,12 @@ function run() {
             core.info('fetching');
             const branches = yield (0, create_or_update_branch_1.getAllBranches)(git);
             for (const branch of branches) {
-                core.info(branch);
+                if ((0, semver_regex_1.default)().test(branch)) {
+                    core.info(`Valid semver ${branch}'`);
+                }
+                else {
+                    core.info(`Invalid semver ${branch}'`);
+                }
             }
             core.endGroup();
             core.setOutput('from-branch', workingBaseType);
@@ -3304,6 +3313,16 @@ function copyFile(srcFile, destFile, force) {
     });
 }
 //# sourceMappingURL=io.js.map
+
+/***/ }),
+
+/***/ 681:
+/***/ ((module) => {
+
+"use strict";
+
+module.exports = () => /(?:(?<=^v?|\sv?)(?:(?:0|[1-9]\d{0,9})\.){2}(?:0|[1-9]\d{0,9})(?:-(?:0|[1-9]\d*?|[\da-z-]*?[a-z-][\da-z-]*?){0,100}(?:\.(?:0|[1-9]\d*?|[\da-z-]*?[a-z-][\da-z-]*?))*?){0,100}(?:\+[\da-z-]+?(?:\.[\da-z-]+?)*?){0,100}\b){1,200}/gi;
+
 
 /***/ }),
 
