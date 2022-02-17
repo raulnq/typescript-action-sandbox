@@ -11,6 +11,10 @@ export enum WorkingBaseType {
   Commit = 'commit'
 }
 
+export async function fetch(git: GitCommandManager): Promise<void> {
+  await git.exec(['fetch', '--all'], true)
+}
+
 export async function getAllBranches(
   git: GitCommandManager
 ): Promise<string[]> {

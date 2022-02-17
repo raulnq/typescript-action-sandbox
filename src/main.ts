@@ -1,7 +1,11 @@
 /* eslint-disable sort-imports */
 import * as core from '@actions/core'
 import * as utils from './utils'
-import {getWorkingBaseAndType, getAllBranches} from './create-or-update-branch'
+import {
+  getWorkingBaseAndType,
+  getAllBranches,
+  fetch
+} from './create-or-update-branch'
 import {GitCommandManager} from './git-command-manager'
 
 export async function run(): Promise<void> {
@@ -11,6 +15,7 @@ export async function run(): Promise<void> {
     core.startGroup('Checking the base repository state')
     const [workingBase, workingBaseType] = await getWorkingBaseAndType(git)
     core.info(`Working base is ${workingBaseType} '${workingBase}'!!`)
+    await fetch(git)
     const branches = await getAllBranches(git)
     for (const branch of branches) {
       core.info(branch)

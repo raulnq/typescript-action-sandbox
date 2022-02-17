@@ -35,7 +35,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.createOrUpdateBranch = exports.tryFetch = exports.getWorkingBaseAndType = exports.getAllBranches = exports.WorkingBaseType = void 0;
+exports.createOrUpdateBranch = exports.tryFetch = exports.getWorkingBaseAndType = exports.getAllBranches = exports.fetch = exports.WorkingBaseType = void 0;
 /* eslint-disable no-shadow */
 const core = __importStar(__nccwpck_require__(186));
 const uuid_1 = __nccwpck_require__(840);
@@ -45,6 +45,12 @@ var WorkingBaseType;
     WorkingBaseType["Branch"] = "branch";
     WorkingBaseType["Commit"] = "commit";
 })(WorkingBaseType = exports.WorkingBaseType || (exports.WorkingBaseType = {}));
+function fetch(git) {
+    return __awaiter(this, void 0, void 0, function* () {
+        yield git.exec(['fetch', '--all'], true);
+    });
+}
+exports.fetch = fetch;
 function getAllBranches(git) {
     return __awaiter(this, void 0, void 0, function* () {
         const branchsResult = yield git.exec(['branch', '-r', '--list'], true);
@@ -596,6 +602,7 @@ function run() {
             core.startGroup('Checking the base repository state');
             const [workingBase, workingBaseType] = yield (0, create_or_update_branch_1.getWorkingBaseAndType)(git);
             core.info(`Working base is ${workingBaseType} '${workingBase}'!!`);
+            yield (0, create_or_update_branch_1.fetch)(git);
             const branches = yield (0, create_or_update_branch_1.getAllBranches)(git);
             for (const branch of branches) {
                 core.info(branch);
