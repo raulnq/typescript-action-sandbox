@@ -5,7 +5,7 @@ import * as utils from './utils'
 import toSemver from 'to-semver'
 import {
   getWorkingBaseAndType,
-  getAllBranches,
+  getBranches,
   fetch
 } from './create-or-update-branch'
 import {GitCommandManager} from './git-command-manager'
@@ -18,7 +18,7 @@ export async function run(): Promise<void> {
     const [workingBase, workingBaseType] = await getWorkingBaseAndType(git)
     core.info(`Working base is ${workingBaseType} '${workingBase}'!!`)
     await fetch(git)
-    const branches = await getAllBranches(git)
+    const branches = await getBranches(git, 'release')
     for (const branch of branches) {
       if (semverRegex().test(branch)) {
         core.info(`Valid semver ${branch}'`)

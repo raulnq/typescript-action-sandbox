@@ -35,7 +35,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.createOrUpdateBranch = exports.tryFetch = exports.getWorkingBaseAndType = exports.getAllBranches = exports.fetch = exports.WorkingBaseType = void 0;
+exports.createOrUpdateBranch = exports.tryFetch = exports.getWorkingBaseAndType = exports.getBranches = exports.fetch = exports.WorkingBaseType = void 0;
 /* eslint-disable no-shadow */
 const core = __importStar(__nccwpck_require__(2186));
 const uuid_1 = __nccwpck_require__(5840);
@@ -51,18 +51,18 @@ function fetch(git) {
     });
 }
 exports.fetch = fetch;
-function getAllBranches(git) {
+function getBranches(git, branchType) {
     return __awaiter(this, void 0, void 0, function* () {
         const branchsResult = yield git.exec(['branch', '-r', '--list'], true);
         if (branchsResult.exitCode === 0) {
-            return splitLines(branchsResult.stdout);
+            return splitLines(branchsResult.stdout).filter(branch => branch.includes(branchType));
         }
         else {
             return new Array();
         }
     });
 }
-exports.getAllBranches = getAllBranches;
+exports.getBranches = getBranches;
 function getWorkingBaseAndType(git) {
     return __awaiter(this, void 0, void 0, function* () {
         const symbolicRefResult = yield git.exec(['symbolic-ref', 'HEAD', '--short'], true);
@@ -608,7 +608,7 @@ function run() {
             const [workingBase, workingBaseType] = yield (0, create_or_update_branch_1.getWorkingBaseAndType)(git);
             core.info(`Working base is ${workingBaseType} '${workingBase}'!!`);
             yield (0, create_or_update_branch_1.fetch)(git);
-            const branches = yield (0, create_or_update_branch_1.getAllBranches)(git);
+            const branches = yield (0, create_or_update_branch_1.getBranches)(git, 'release');
             for (const branch of branches) {
                 if ((0, semver_regex_1.default)().test(branch)) {
                     core.info(`Valid semver ${branch}'`);

@@ -15,12 +15,15 @@ export async function fetch(git: GitCommandManager): Promise<void> {
   await git.exec(['fetch', '--all'], true)
 }
 
-export async function getAllBranches(
-  git: GitCommandManager
+export async function getBranches(
+  git: GitCommandManager,
+  branchType: string
 ): Promise<string[]> {
   const branchsResult = await git.exec(['branch', '-r', '--list'], true)
   if (branchsResult.exitCode === 0) {
-    return splitLines(branchsResult.stdout)
+    return splitLines(branchsResult.stdout).filter(branch =>
+      branch.includes(branchType)
+    )
   } else {
     return new Array<string>()
   }
