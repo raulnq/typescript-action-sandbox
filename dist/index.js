@@ -603,6 +603,7 @@ function run() {
             const [workingBase, workingBaseType] = yield (0, create_or_update_branch_1.getWorkingBaseAndType)(git);
             core.info(`Working base is ${workingBaseType} '${workingBase}'!!`);
             yield (0, create_or_update_branch_1.fetch)(git);
+            core.info('fetching');
             const branches = yield (0, create_or_update_branch_1.getAllBranches)(git);
             for (const branch of branches) {
                 core.info(branch);
