@@ -10,8 +10,9 @@ export async function run(): Promise<void> {
     const git = await GitCommandManager.create(repoPath)
     core.startGroup('Checking the base repository state')
     const [workingBase, workingBaseType] = await getWorkingBaseAndType(git)
-    core.info(`Working base is ${workingBaseType} '${workingBase}'`)
+    core.info(`Working base is ${workingBaseType} '${workingBase}'!!`)
     const branches = await getAllBranches(git)
+    core.info('paso')
     for (const branch of branches) {
       core.info(branch)
     }
