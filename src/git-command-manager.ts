@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import * as core from '@actions/core'
 import * as exec from '@actions/exec'
 import * as io from '@actions/io'
 import * as path from 'path'
@@ -275,9 +274,7 @@ export class GitCommandManager {
       ignoreReturnCode: allowAllExitCodes,
       listeners: {
         stdout: (data: Buffer) => {
-          const row = data.toString()
-          stdout.push(row)
-          core.info(row)
+          stdout.push(data.toString())
         },
         stderr: (data: Buffer) => {
           stderr.push(data.toString())

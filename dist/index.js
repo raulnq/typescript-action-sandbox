@@ -284,7 +284,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.GitCommandManager = void 0;
 /* eslint-disable @typescript-eslint/no-explicit-any */
-const core = __importStar(__nccwpck_require__(186));
 const exec = __importStar(__nccwpck_require__(514));
 const io = __importStar(__nccwpck_require__(436));
 const path = __importStar(__nccwpck_require__(622));
@@ -523,9 +522,7 @@ class GitCommandManager {
                 ignoreReturnCode: allowAllExitCodes,
                 listeners: {
                     stdout: (data) => {
-                        const row = data.toString();
-                        stdout.push(row);
-                        core.info(row);
+                        stdout.push(data.toString());
                     },
                     stderr: (data) => {
                         stderr.push(data.toString());
