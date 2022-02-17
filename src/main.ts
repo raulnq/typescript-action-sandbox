@@ -19,21 +19,9 @@ export async function run(): Promise<void> {
     core.info(`Working base is ${workingBaseType} '${workingBase}'!!`)
     await fetch(git)
     const branches = await getBranches(git, 'release')
-    for (const branch of branches) {
-      if (semverRegex().test(branch)) {
-        core.info(`Valid semver ${branch}'`)
-      } else {
-        core.info(`Invalid semver ${branch}'`)
-        const matches = semverRegex().exec(branch)
-        if (matches !== null && matches.length > 0) {
-          core.info(`Extracted version ${matches[0]}'`)
-        } else {
-          core.info('No version')
-        }
-      }
-    }
     const sortedBranches: string[] = toSemver(branches)
-    for (const branch of sortedBranches) {
+    core.info('List of branches in order')
+    for (const branch of sortedBranches.reverse()) {
       core.info(`branch: ${branch}'`)
     }
     core.endGroup()

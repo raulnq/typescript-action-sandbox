@@ -594,7 +594,6 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.run = void 0;
 /* eslint-disable sort-imports */
 const core = __importStar(__nccwpck_require__(2186));
-const semver_regex_1 = __importDefault(__nccwpck_require__(681));
 const utils = __importStar(__nccwpck_require__(918));
 const to_semver_1 = __importDefault(__nccwpck_require__(3881));
 const create_or_update_branch_1 = __nccwpck_require__(8363);
@@ -609,23 +608,9 @@ function run() {
             core.info(`Working base is ${workingBaseType} '${workingBase}'!!`);
             yield (0, create_or_update_branch_1.fetch)(git);
             const branches = yield (0, create_or_update_branch_1.getBranches)(git, 'release');
-            for (const branch of branches) {
-                if ((0, semver_regex_1.default)().test(branch)) {
-                    core.info(`Valid semver ${branch}'`);
-                }
-                else {
-                    core.info(`Invalid semver ${branch}'`);
-                    const matches = (0, semver_regex_1.default)().exec(branch);
-                    if (matches !== null && matches.length > 0) {
-                        core.info(`Extracted version ${matches[0]}'`);
-                    }
-                    else {
-                        core.info('No version');
-                    }
-                }
-            }
             const sortedBranches = (0, to_semver_1.default)(branches);
-            for (const branch of sortedBranches) {
+            core.info('List of branches in order');
+            for (const branch of sortedBranches.reverse()) {
                 core.info(`branch: ${branch}'`);
             }
             core.endGroup();
@@ -5952,16 +5937,6 @@ const forEachStep = (self, fn, node, thisp) => {
 }
 
 module.exports = LRUCache
-
-
-/***/ }),
-
-/***/ 681:
-/***/ ((module) => {
-
-"use strict";
-
-module.exports = () => /(?:(?<=^v?|\sv?)(?:(?:0|[1-9]\d{0,9})\.){2}(?:0|[1-9]\d{0,9})(?:-(?:0|[1-9]\d*?|[\da-z-]*?[a-z-][\da-z-]*?){0,100}(?:\.(?:0|[1-9]\d*?|[\da-z-]*?[a-z-][\da-z-]*?))*?){0,100}(?:\+[\da-z-]+?(?:\.[\da-z-]+?)*?){0,100}\b){1,200}/gi;
 
 
 /***/ }),
