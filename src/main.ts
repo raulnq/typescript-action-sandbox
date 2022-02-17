@@ -23,6 +23,10 @@ export async function run(): Promise<void> {
         core.info(`Valid semver ${branch}'`)
       } else {
         core.info(`Invalid semver ${branch}'`)
+        const matches = semverRegex().exec(branch)
+        if (matches !== null && matches.length > 0) {
+          core.info(`Extracted version ${matches[0]}'`)
+        }
       }
     }
     core.endGroup()

@@ -614,6 +614,10 @@ function run() {
                 }
                 else {
                     core.info(`Invalid semver ${branch}'`);
+                    const matches = (0, semver_regex_1.default)().exec(branch);
+                    if (matches !== null && matches.length > 0) {
+                        core.info(`Extracted version ${matches[0]}'`);
+                    }
                 }
             }
             core.endGroup();
