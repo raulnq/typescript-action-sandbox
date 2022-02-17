@@ -1,7 +1,8 @@
 /* eslint-disable sort-imports */
 import * as core from '@actions/core'
-import semverRegex from 'semver-regex';
+import semverRegex from 'semver-regex'
 import * as utils from './utils'
+import toSemver from 'to-semver'
 import {
   getWorkingBaseAndType,
   getAllBranches,
@@ -30,6 +31,10 @@ export async function run(): Promise<void> {
           core.info('No version')
         }
       }
+    }
+    const sortedBranches: string[] = toSemver(branches)
+    for (const branch of sortedBranches) {
+      core.info(`branch: ${branch}'`)
     }
     core.endGroup()
 

@@ -33,6 +33,7 @@
     "@types/jest": "^27.4.0",
     "https-proxy-agent": "^5.0.0",
     "semver-sort": "^1.0.0",
+    "to-semver": "^4.0.0",
     "uuid": "^8.3.2"
   },
   "devDependencies": {
