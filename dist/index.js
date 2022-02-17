@@ -618,6 +618,9 @@ function run() {
                     if (matches !== null && matches.length > 0) {
                         core.info(`Extracted version ${matches[0]}'`);
                     }
+                    else {
+                        core.info('No version');
+                    }
                 }
             }
             core.endGroup();

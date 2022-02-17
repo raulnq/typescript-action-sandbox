@@ -26,6 +26,8 @@ export async function run(): Promise<void> {
         const matches = semverRegex().exec(branch)
         if (matches !== null && matches.length > 0) {
           core.info(`Extracted version ${matches[0]}'`)
+        } else {
+          core.info('No version')
         }
       }
     }
