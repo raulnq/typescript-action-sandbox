@@ -11,6 +11,18 @@ export enum WorkingBaseType {
   Commit = 'commit'
 }
 
+export async function getAllBranches(
+  git: GitCommandManager
+): Promise<string[]> {
+  const branchsResult = await git.exec(['branch', '-r'], true)
+  if (branchsResult.exitCode === 0) {
+    // A ref is checked out
+    return splitLines(branchsResult.stdout)
+  } else {
+    return new Array<string>()
+  }
+}
+
 export async function getWorkingBaseAndType(
   git: GitCommandManager
 ): Promise<[string, WorkingBaseType]> {
