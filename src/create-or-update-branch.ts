@@ -14,9 +14,8 @@ export enum WorkingBaseType {
 export async function getAllBranches(
   git: GitCommandManager
 ): Promise<string[]> {
-  const branchsResult = await git.exec(['branch', '-r'], true)
+  const branchsResult = await git.exec(['branch', '-r', '--list'], true)
   if (branchsResult.exitCode === 0) {
-    core.info(branchsResult.stdout)
     return splitLines(branchsResult.stdout)
   } else {
     return new Array<string>()

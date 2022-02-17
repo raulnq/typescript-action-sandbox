@@ -12,7 +12,6 @@ export async function run(): Promise<void> {
     const [workingBase, workingBaseType] = await getWorkingBaseAndType(git)
     core.info(`Working base is ${workingBaseType} '${workingBase}'!!`)
     const branches = await getAllBranches(git)
-    core.info('paso')
     for (const branch of branches) {
       core.info(branch)
     }

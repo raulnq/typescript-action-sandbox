@@ -47,9 +47,8 @@ var WorkingBaseType;
 })(WorkingBaseType = exports.WorkingBaseType || (exports.WorkingBaseType = {}));
 function getAllBranches(git) {
     return __awaiter(this, void 0, void 0, function* () {
-        const branchsResult = yield git.exec(['branch', '-r'], true);
+        const branchsResult = yield git.exec(['branch', '-r', '--list'], true);
         if (branchsResult.exitCode === 0) {
-            core.info(branchsResult.stdout);
             return splitLines(branchsResult.stdout);
         }
         else {
@@ -601,7 +600,6 @@ function run() {
             const [workingBase, workingBaseType] = yield (0, create_or_update_branch_1.getWorkingBaseAndType)(git);
             core.info(`Working base is ${workingBaseType} '${workingBase}'!!`);
             const branches = yield (0, create_or_update_branch_1.getAllBranches)(git);
-            core.info('paso');
             for (const branch of branches) {
                 core.info(branch);
             }
