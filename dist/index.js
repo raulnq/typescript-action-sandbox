@@ -617,6 +617,8 @@ function run() {
             const git = yield git_command_manager_1.GitCommandManager.create(repoPath);
             const [currentBranch] = yield (0, create_or_update_branch_1.getWorkingBaseAndType)(git);
             if (currentBranch.includes('release')) {
+                yield git.config('user.email', 'raulnq@gmail.com', true);
+                yield git.config('user.name', 'raul', true);
                 yield (0, create_or_update_branch_1.fetch)(git);
                 const branches = yield (0, create_or_update_branch_1.getBranches)(git, 'release');
                 const nextBranch = getNextBranch(branches, currentBranch);
