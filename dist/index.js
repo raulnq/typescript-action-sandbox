@@ -35,7 +35,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.createOrUpdateBranch = exports.tryFetch = exports.getWorkingBaseAndType = exports.getBranches = exports.fetch = exports.WorkingBaseType = void 0;
+exports.createOrUpdateBranch = exports.tryFetch = exports.getWorkingBaseAndType = exports.merge = exports.getBranches = exports.fetch = exports.WorkingBaseType = void 0;
 /* eslint-disable no-shadow */
 const core = __importStar(__nccwpck_require__(2186));
 const uuid_1 = __nccwpck_require__(5840);
@@ -63,6 +63,18 @@ function getBranches(git, branchType) {
     });
 }
 exports.getBranches = getBranches;
+function merge(git, targetBranch) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const mergeResult = yield git.exec(['merge', targetBranch], true);
+        if (mergeResult.exitCode === 0) {
+            return splitLines(mergeResult.stdout);
+        }
+        else {
+            return new Array();
+        }
+    });
+}
+exports.merge = merge;
 function getWorkingBaseAndType(git) {
     return __awaiter(this, void 0, void 0, function* () {
         const symbolicRefResult = yield git.exec(['symbolic-ref', 'HEAD', '--short'], true);
@@ -608,6 +620,8 @@ function run() {
                 yield (0, create_or_update_branch_1.fetch)(git);
                 const branches = yield (0, create_or_update_branch_1.getBranches)(git, 'release');
                 const nextBranch = getNextBranch(branches, currentBranch);
+                yield git.checkout(nextBranch);
+                yield (0, create_or_update_branch_1.merge)(git, currentBranch);
                 core.setOutput('from-branch', currentBranch);
                 core.setOutput('to-branch', nextBranch);
             }

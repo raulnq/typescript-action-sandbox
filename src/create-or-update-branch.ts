@@ -29,6 +29,18 @@ export async function getBranches(
   }
 }
 
+export async function merge(
+  git: GitCommandManager,
+  targetBranch: string
+): Promise<string[]> {
+  const mergeResult = await git.exec(['merge', targetBranch], true)
+  if (mergeResult.exitCode === 0) {
+    return splitLines(mergeResult.stdout)
+  } else {
+    return new Array<string>()
+  }
+}
+
 export async function getWorkingBaseAndType(
   git: GitCommandManager
 ): Promise<[string, WorkingBaseType]> {

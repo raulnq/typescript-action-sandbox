@@ -5,6 +5,7 @@ import toSemver from 'to-semver'
 import {
   getWorkingBaseAndType,
   getBranches,
+  merge,
   fetch
 } from './create-or-update-branch'
 import {GitCommandManager} from './git-command-manager'
@@ -18,6 +19,8 @@ export async function run(): Promise<void> {
       await fetch(git)
       const branches = await getBranches(git, 'release')
       const nextBranch = getNextBranch(branches, currentBranch)
+      await git.checkout(nextBranch)
+      await merge(git, currentBranch)
       core.setOutput('from-branch', currentBranch)
       core.setOutput('to-branch', nextBranch)
     } else {
