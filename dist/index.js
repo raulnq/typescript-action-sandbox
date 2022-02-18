@@ -591,7 +591,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.run = void 0;
+exports.getNextBranch = exports.run = void 0;
 /* eslint-disable sort-imports */
 const core = __importStar(__nccwpck_require__(2186));
 const utils = __importStar(__nccwpck_require__(918));
@@ -604,18 +604,12 @@ function run() {
             const repoPath = utils.getRepoPath();
             const git = yield git_command_manager_1.GitCommandManager.create(repoPath);
             core.startGroup('Checking the base repository state');
-            const [workingBase, workingBaseType] = yield (0, create_or_update_branch_1.getWorkingBaseAndType)(git);
-            core.info(`Working base is ${workingBaseType} '${workingBase}'!!`);
+            const [currentBranch] = yield (0, create_or_update_branch_1.getWorkingBaseAndType)(git);
             yield (0, create_or_update_branch_1.fetch)(git);
             const branches = yield (0, create_or_update_branch_1.getBranches)(git, 'release');
-            const sortedBranches = (0, to_semver_1.default)(branches);
-            core.info('List of branches in order');
-            for (const branch of sortedBranches.reverse()) {
-                core.info(`branch: ${branch}'`);
-            }
-            core.endGroup();
-            core.setOutput('from-branch', workingBaseType);
-            core.setOutput('to-branch', workingBase);
+            const nextBranch = getNextBranch(branches, currentBranch);
+            core.setOutput('from-branch', currentBranch);
+            core.setOutput('to-branch', nextBranch);
         }
         catch (error) {
             if (error instanceof Error)
@@ -624,6 +618,33 @@ function run() {
     });
 }
 exports.run = run;
+function getNextBranch(branches, currentBranch) {
+    const versions = (0, to_semver_1.default)(branches);
+    let nextBranch = '';
+    const reversedVersions = versions.reverse();
+    let nextVersionIndex = -1;
+    for (let index = 0; index < reversedVersions.length; index++) {
+        const version = reversedVersions[index];
+        if (currentBranch.includes(version)) {
+            nextVersionIndex = index + 1;
+            break;
+        }
+    }
+    if (nextVersionIndex < reversedVersions.length && nextVersionIndex !== -1) {
+        const nextVersion = reversedVersions[nextVersionIndex];
+        for (const branch of branches) {
+            if (branch.includes(nextVersion)) {
+                nextBranch = branch;
+                break;
+            }
+        }
+    }
+    else {
+        nextBranch = 'develop';
+    }
+    return nextBranch;
+}
+exports.getNextBranch = getNextBranch;
 run();
 
 

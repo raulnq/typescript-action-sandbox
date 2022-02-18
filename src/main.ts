@@ -1,6 +1,5 @@
 /* eslint-disable sort-imports */
 import * as core from '@actions/core'
-import semverRegex from 'semver-regex'
 import * as utils from './utils'
 import toSemver from 'to-semver'
 import {
@@ -15,22 +14,46 @@ export async function run(): Promise<void> {
     const repoPath = utils.getRepoPath()
     const git = await GitCommandManager.create(repoPath)
     core.startGroup('Checking the base repository state')
-    const [workingBase, workingBaseType] = await getWorkingBaseAndType(git)
-    core.info(`Working base is ${workingBaseType} '${workingBase}'!!`)
+    const [currentBranch] = await getWorkingBaseAndType(git)
     await fetch(git)
     const branches = await getBranches(git, 'release')
-    const sortedBranches: string[] = toSemver(branches)
-    core.info('List of branches in order')
-    for (const branch of sortedBranches.reverse()) {
-      core.info(`branch: ${branch}'`)
-    }
-    core.endGroup()
-
-    core.setOutput('from-branch', workingBaseType)
-    core.setOutput('to-branch', workingBase)
+    const nextBranch = getNextBranch(branches, currentBranch)
+    core.setOutput('from-branch', currentBranch)
+    core.setOutput('to-branch', nextBranch)
   } catch (error) {
     if (error instanceof Error) core.setFailed(error.message)
   }
+}
+
+export function getNextBranch(
+  branches: string[],
+  currentBranch: string
+): string {
+  const versions: string[] = toSemver(branches)
+  let nextBranch = ''
+  const reversedVersions = versions.reverse()
+  let nextVersionIndex = -1
+  for (let index = 0; index < reversedVersions.length; index++) {
+    const version = reversedVersions[index]
+    if (currentBranch.includes(version)) {
+      nextVersionIndex = index + 1
+      break
+    }
+  }
+
+  if (nextVersionIndex < reversedVersions.length && nextVersionIndex !== -1) {
+    const nextVersion = reversedVersions[nextVersionIndex]
+    for (const branch of branches) {
+      if (branch.includes(nextVersion)) {
+        nextBranch = branch
+        break
+      }
+    }
+  } else {
+    nextBranch = 'develop'
+  }
+
+  return nextBranch
 }
 
 run()

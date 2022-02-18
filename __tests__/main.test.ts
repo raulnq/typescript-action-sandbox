@@ -13,4 +13,13 @@ describe('When running the action', ()=>{
     //expect(fakeSetOutput).toHaveBeenCalledWith('from-branch', expect.anything())
   })
 })
-
+/*
+describe('getNextBranch tests', ()=>{
+  test('current branch as a first one of the list', async () => {
+    const branches = ['/release/2.0.0','/release/1.0.5','/release/3.1.5','/release/1.1.5','/release/1.0.0']
+    const currentBranch = '/release/1.0.0'
+    const nextBranch = await getNextBranch(branches, currentBranch)
+    expect(nextBranch).toBe('/release/1.0.5')
+  })
+})
+*/
