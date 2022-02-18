@@ -65,7 +65,7 @@ function getBranches(git, branchType) {
 exports.getBranches = getBranches;
 function merge(git, targetBranch) {
     return __awaiter(this, void 0, void 0, function* () {
-        const mergeResult = yield git.exec(['merge', targetBranch], true);
+        const mergeResult = yield git.exec(['merge', targetBranch, '--allow-unrelated-histories'], true);
         if (mergeResult.exitCode === 0) {
             return splitLines(mergeResult.stdout);
         }
