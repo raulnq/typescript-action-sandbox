@@ -13,7 +13,6 @@ export async function run(): Promise<void> {
   try {
     const repoPath = utils.getRepoPath()
     const git = await GitCommandManager.create(repoPath)
-    core.startGroup('Checking the base repository state')
     const [currentBranch] = await getWorkingBaseAndType(git)
     if (currentBranch.includes('release')) {
       await fetch(git)

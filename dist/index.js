@@ -603,7 +603,6 @@ function run() {
         try {
             const repoPath = utils.getRepoPath();
             const git = yield git_command_manager_1.GitCommandManager.create(repoPath);
-            core.startGroup('Checking the base repository state');
             const [currentBranch] = yield (0, create_or_update_branch_1.getWorkingBaseAndType)(git);
             if (currentBranch.includes('release')) {
                 yield (0, create_or_update_branch_1.fetch)(git);
