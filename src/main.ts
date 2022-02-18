@@ -15,11 +15,15 @@ export async function run(): Promise<void> {
     const git = await GitCommandManager.create(repoPath)
     core.startGroup('Checking the base repository state')
     const [currentBranch] = await getWorkingBaseAndType(git)
-    await fetch(git)
-    const branches = await getBranches(git, 'release')
-    const nextBranch = getNextBranch(branches, currentBranch)
-    core.setOutput('from-branch', currentBranch)
-    core.setOutput('to-branch', nextBranch)
+    if (currentBranch.includes('release')) {
+      await fetch(git)
+      const branches = await getBranches(git, 'release')
+      const nextBranch = getNextBranch(branches, currentBranch)
+      core.setOutput('from-branch', currentBranch)
+      core.setOutput('to-branch', nextBranch)
+    } else {
+      core.info(`The branch ${currentBranch} is not a release branch`)
+    }
   } catch (error) {
     if (error instanceof Error) core.setFailed(error.message)
   }

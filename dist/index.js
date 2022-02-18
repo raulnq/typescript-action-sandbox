@@ -605,11 +605,16 @@ function run() {
             const git = yield git_command_manager_1.GitCommandManager.create(repoPath);
             core.startGroup('Checking the base repository state');
             const [currentBranch] = yield (0, create_or_update_branch_1.getWorkingBaseAndType)(git);
-            yield (0, create_or_update_branch_1.fetch)(git);
-            const branches = yield (0, create_or_update_branch_1.getBranches)(git, 'release');
-            const nextBranch = getNextBranch(branches, currentBranch);
-            core.setOutput('from-branch', currentBranch);
-            core.setOutput('to-branch', nextBranch);
+            if (currentBranch.includes('release')) {
+                yield (0, create_or_update_branch_1.fetch)(git);
+                const branches = yield (0, create_or_update_branch_1.getBranches)(git, 'release');
+                const nextBranch = getNextBranch(branches, currentBranch);
+                core.setOutput('from-branch', currentBranch);
+                core.setOutput('to-branch', nextBranch);
+            }
+            else {
+                core.info(`The branch ${currentBranch} is not a release branch`);
+            }
         }
         catch (error) {
             if (error instanceof Error)
