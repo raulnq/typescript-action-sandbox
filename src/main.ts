@@ -51,7 +51,7 @@ export function getNextBranch(
     const nextVersion = reversedVersions[nextVersionIndex]
     for (const branch of branches) {
       if (branch.includes(nextVersion)) {
-        nextBranch = branch
+        nextBranch = branch.replace('origin/', '')
         break
       }
     }
