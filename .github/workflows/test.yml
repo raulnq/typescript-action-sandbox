@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - main
+      - 'release/**'
 
 jobs:
   test: # make sure the action works on a clean machine without building
@@ -13,6 +13,8 @@ jobs:
       - uses: ./
         name: Create pull request
         id: create-pull-request
+        with:
+          github_token: ${{ secrets.REPO_SCOPED_TOKEN }}
       - name: Print the branches
         run : |
           echo ${{steps.create-pull-request.outputs.from-branch}}
