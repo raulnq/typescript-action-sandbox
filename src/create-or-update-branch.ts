@@ -33,7 +33,10 @@ export async function merge(
   git: GitCommandManager,
   targetBranch: string
 ): Promise<string[]> {
-  const mergeResult = await git.exec(['merge', targetBranch], true)
+  const mergeResult = await git.exec(
+    ['merge', targetBranch, '--allow-unrelated-histories'],
+    true
+  )
   if (mergeResult.exitCode === 0) {
     return splitLines(mergeResult.stdout)
   } else {

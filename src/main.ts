@@ -33,6 +33,8 @@ export async function run(): Promise<void> {
     core.info(`owner: ${owner} repo: ${repo}`)
     const [currentBranch] = await getWorkingBaseAndType(git)
     if (currentBranch.includes('release')) {
+      await git.config('user.email', 'raulnq@gmail.com', true)
+      await git.config('user.name', 'raul', true)
       await fetch(git)
       const branches = await getBranches(git, 'release')
       const nextBranch = getNextBranch(branches, currentBranch)
