@@ -658,6 +658,32 @@ function run() {
                         });
                         const hasContentDifference = response.files !== undefined && response.files.length > 0;
                         core.info(`hasContentDifference ${hasContentDifference}`);
+                        if (hasContentDifference) {
+                            const { data: pullRequest } = yield octokit.rest.pulls.create({
+                                owner,
+                                repo,
+                                head: currentBranch,
+                                base: nextBranch,
+                                title: `sync: ${currentBranch} to ${nextBranch}`,
+                                body: `sync-branches: New code has just landed in ${currentBranch}, so let's bring ${nextBranch} up to speed!`,
+                                draft: false
+                            });
+                            /*if (reviewers.length > 0) {
+                              octokit.rest.pulls.requestReviewers({
+                                owner,
+                                repo,
+                                pull_number: pullRequest.number,
+                                reviewers
+                              })
+                            }*/
+                            core.info(`Pull request (${pullRequest.number}) successful! You can view it here: ${pullRequest.url}`);
+                        }
+                        else {
+                            core.info(`There is no content difference between ${currentBranch} and ${nextBranch}.`);
+                        }
+                    }
+                    else {
+                        core.info(`There is already a pull request (${currentPull.number}) to ${currentBranch} from ${nextBranch}. You can view it here: ${currentPull.url}`);
                     }
                 }
                 core.setOutput('from-branch', currentBranch);
