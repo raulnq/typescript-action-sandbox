@@ -13,6 +13,8 @@ jobs:
       - uses: ./
         name: Create pull request
         id: create-pull-request
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
       - name: Print the branches
         run : |
           echo ${{steps.create-pull-request.outputs.from-branch}}

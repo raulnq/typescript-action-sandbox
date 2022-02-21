@@ -16,6 +16,16 @@ export function getStringAsArray(str: string): string[] {
     .filter(x => x !== '')
 }
 
+export function getOwner(): string[] {
+  const githubWorkspacePath = process.env['GITHUB_REPOSITORY']
+  if (!githubWorkspacePath) {
+    throw new Error('GITHUB_REPOSITORY not defined')
+  }
+  const [owner, repo] = githubWorkspacePath.split('/')
+  core.info(`owner: ${owner} repo: ${repo}`)
+  return [owner, repo]
+}
+
 export function getRepoPath(relativePath?: string): string {
   let githubWorkspacePath = process.env['GITHUB_WORKSPACE']
   if (!githubWorkspacePath) {

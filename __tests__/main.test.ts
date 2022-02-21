@@ -10,7 +10,7 @@ describe('When running the action', ()=>{
 
   test('it should set the output parameters', async () => {
     await run()
-    //expect(fakeSetOutput).toHaveBeenCalledWith('from-branch', expect.anything())
+     //expect(fakeSetOutput).toHaveBeenCalledWith('from-branch', expect.anything())
   })
 })
 /*
