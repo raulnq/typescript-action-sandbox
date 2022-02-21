@@ -637,7 +637,7 @@ function run() {
                 const nextBranch = getNextBranch(branches, currentBranch);
                 try {
                     const newMasterSha = yield merge(currentBranch, nextBranch);
-                    core.info(`new sha ${newMasterSha}`);
+                    core.info(`hizo merge ${newMasterSha}`);
                 }
                 catch (error) {
                     if (error instanceof Error)
