@@ -633,13 +633,13 @@ function run() {
                 yield (0, create_or_update_branch_1.fetch)(git);
                 const branches = yield (0, create_or_update_branch_1.getBranches)(git, 'release');
                 const nextBranch = getNextBranch(branches, currentBranch);
-                yield merge(currentBranch, nextBranch);
                 try {
                     const newMasterSha = yield merge(currentBranch, nextBranch);
                     core.info(`new sha ${newMasterSha}`);
                 }
                 catch (error) {
-                    core.info('merge failed');
+                    if (error instanceof Error)
+                        core.info(`${nextBranch} merge failed:${error.message}`);
                     const { data: currentPulls } = yield octokit.rest.pulls.list({
                         owner,
                         repo

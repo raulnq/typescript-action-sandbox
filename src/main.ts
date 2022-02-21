@@ -36,12 +36,12 @@ export async function run(): Promise<void> {
       await fetch(git)
       const branches = await getBranches(git, 'release')
       const nextBranch = getNextBranch(branches, currentBranch)
-      await merge(currentBranch, nextBranch)
       try {
         const newMasterSha = await merge(currentBranch, nextBranch)
         core.info(`new sha ${newMasterSha}`)
       } catch (error) {
-        core.info('merge failed')
+        if (error instanceof Error)
+          core.info(`${nextBranch} merge failed:${error.message}`)
 
         const {data: currentPulls} = await octokit.rest.pulls.list({
           owner,
