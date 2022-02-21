@@ -38,7 +38,7 @@ export async function run(): Promise<void> {
       const nextBranch = getNextBranch(branches, currentBranch)
       try {
         const newMasterSha = await merge(currentBranch, nextBranch)
-        core.info(`new sha ${newMasterSha}`)
+        core.info(`hizo merge ${newMasterSha}`)
       } catch (error) {
         if (error instanceof Error)
           core.info(`${nextBranch} merge failed:${error.message}`)
