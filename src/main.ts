@@ -29,7 +29,8 @@ export async function run(): Promise<void> {
   try {
     const repoPath = utils.getRepoPath()
     const git = await GitCommandManager.create(repoPath)
-    utils.getOwner()
+    const [owner, repo] = utils.getOwner()
+    core.info(`owner: ${owner} repo: ${repo}`)
     const [currentBranch] = await getWorkingBaseAndType(git)
     if (currentBranch.includes('release')) {
       await fetch(git)

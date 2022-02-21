@@ -626,7 +626,8 @@ function run() {
         try {
             const repoPath = utils.getRepoPath();
             const git = yield git_command_manager_1.GitCommandManager.create(repoPath);
-            utils.getOwner();
+            const [owner, repo] = utils.getOwner();
+            core.info(`owner: ${owner} repo: ${repo}`);
             const [currentBranch] = yield (0, create_or_update_branch_1.getWorkingBaseAndType)(git);
             if (currentBranch.includes('release')) {
                 yield (0, create_or_update_branch_1.fetch)(git);
