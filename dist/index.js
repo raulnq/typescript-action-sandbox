@@ -626,6 +626,7 @@ function run() {
         try {
             const repoPath = utils.getRepoPath();
             const git = yield git_command_manager_1.GitCommandManager.create(repoPath);
+            utils.getOwner();
             const [currentBranch] = yield (0, create_or_update_branch_1.getWorkingBaseAndType)(git);
             if (currentBranch.includes('release')) {
                 yield (0, create_or_update_branch_1.fetch)(git);
@@ -639,6 +640,10 @@ function run() {
                 catch (error) {
                     if (error instanceof Error)
                         core.setFailed(`${nextBranch} merge failed::${error.message}`);
+                    /*const { data: currentPulls } = await octokit.rest.pulls.list({
+                      owner,
+                      repo,
+                    });*/
                 }
                 core.setOutput('from-branch', currentBranch);
                 core.setOutput('to-branch', nextBranch);
@@ -711,7 +716,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.fileExistsSync = exports.parseDisplayNameEmail = exports.randomString = exports.secondsSinceEpoch = exports.getRemoteUrl = exports.getRemoteDetail = exports.getRepoPath = exports.getStringAsArray = exports.getInputAsArray = void 0;
+exports.fileExistsSync = exports.parseDisplayNameEmail = exports.randomString = exports.secondsSinceEpoch = exports.getRemoteUrl = exports.getRemoteDetail = exports.getRepoPath = exports.getOwner = exports.getStringAsArray = exports.getInputAsArray = void 0;
 const core = __importStar(__nccwpck_require__(2186));
 const fs = __importStar(__nccwpck_require__(5747));
 const path = __importStar(__nccwpck_require__(5622));
@@ -726,6 +731,16 @@ function getStringAsArray(str) {
         .filter(x => x !== '');
 }
 exports.getStringAsArray = getStringAsArray;
+function getOwner() {
+    const githubWorkspacePath = process.env['GITHUB_REPOSITORY'];
+    if (!githubWorkspacePath) {
+        throw new Error('GITHUB_REPOSITORY not defined');
+    }
+    const [owner, repo] = githubWorkspacePath.split('/');
+    core.debug(`owner: ${owner} repo: ${repo}`);
+    return [owner, repo];
+}
+exports.getOwner = getOwner;
 function getRepoPath(relativePath) {
     let githubWorkspacePath = process.env['GITHUB_WORKSPACE'];
     if (!githubWorkspacePath) {

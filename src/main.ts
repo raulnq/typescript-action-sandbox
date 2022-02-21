@@ -29,6 +29,7 @@ export async function run(): Promise<void> {
   try {
     const repoPath = utils.getRepoPath()
     const git = await GitCommandManager.create(repoPath)
+    utils.getOwner()
     const [currentBranch] = await getWorkingBaseAndType(git)
     if (currentBranch.includes('release')) {
       await fetch(git)
@@ -41,6 +42,11 @@ export async function run(): Promise<void> {
       } catch (error) {
         if (error instanceof Error)
           core.setFailed(`${nextBranch} merge failed::${error.message}`)
+
+        /*const { data: currentPulls } = await octokit.rest.pulls.list({
+          owner,
+          repo,
+        });*/
       }
       core.setOutput('from-branch', currentBranch)
       core.setOutput('to-branch', nextBranch)
