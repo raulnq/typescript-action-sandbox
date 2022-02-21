@@ -14,7 +14,7 @@ jobs:
         name: Create pull request
         id: create-pull-request
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ secrets.REPO_SCOPED_TOKEN }}
       - name: Print the branches
         run : |
           echo ${{steps.create-pull-request.outputs.from-branch}}
