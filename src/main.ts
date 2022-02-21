@@ -2,13 +2,28 @@
 import * as core from '@actions/core'
 import * as utils from './utils'
 import toSemver from 'to-semver'
+import {context, getOctokit} from '@actions/github'
 import {
   getWorkingBaseAndType,
   getBranches,
-  merge,
   fetch
 } from './create-or-update-branch'
+
 import {GitCommandManager} from './git-command-manager'
+
+const octokit = getOctokit(core.getInput('github_token'))
+
+async function merge(branch: string, to: string): Promise<string> {
+  core.info(`merge branch:${branch} to: ${to}`)
+  const response = await octokit.rest.repos.merge({
+    ...context.repo,
+    base: to,
+    head: branch
+  })
+  const newMasterSha = response.data.sha
+  core.info(`sha = ${newMasterSha}`)
+  return newMasterSha
+}
 
 export async function run(): Promise<void> {
   try {
@@ -19,8 +34,14 @@ export async function run(): Promise<void> {
       await fetch(git)
       const branches = await getBranches(git, 'release')
       const nextBranch = getNextBranch(branches, currentBranch)
-      await git.checkout(nextBranch)
-      await merge(git, currentBranch)
+      await merge(currentBranch, nextBranch)
+      try {
+        const newMasterSha = await merge(currentBranch, nextBranch)
+        core.info(`new sha ${newMasterSha}`)
+      } catch (error) {
+        if (error instanceof Error)
+          core.setFailed(`${nextBranch} merge failed::${error.message}`)
+      }
       core.setOutput('from-branch', currentBranch)
       core.setOutput('to-branch', nextBranch)
     } else {
