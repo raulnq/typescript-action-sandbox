@@ -22,7 +22,7 @@ export function getOwner(): string[] {
     throw new Error('GITHUB_REPOSITORY not defined')
   }
   const [owner, repo] = githubWorkspacePath.split('/')
-  core.debug(`owner: ${owner} repo: ${repo}`)
+  core.info(`owner: ${owner} repo: ${repo}`)
   return [owner, repo]
 }
 

@@ -640,7 +640,7 @@ function run() {
                 }
                 catch (error) {
                     if (error instanceof Error)
-                        core.info(`${nextBranch} merge failed::${error.message}`);
+                        core.info(`${nextBranch} merge failed:${error.message}`);
                     const { data: currentPulls } = yield octokit.rest.pulls.list({
                         owner,
                         repo
@@ -753,7 +753,7 @@ function getOwner() {
         throw new Error('GITHUB_REPOSITORY not defined');
     }
     const [owner, repo] = githubWorkspacePath.split('/');
-    core.debug(`owner: ${owner} repo: ${repo}`);
+    core.info(`owner: ${owner} repo: ${repo}`);
     return [owner, repo];
 }
 exports.getOwner = getOwner;
