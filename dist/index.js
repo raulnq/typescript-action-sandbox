@@ -639,8 +639,7 @@ function run() {
                     core.info(`new sha ${newMasterSha}`);
                 }
                 catch (error) {
-                    if (error instanceof Error)
-                        core.info(`${nextBranch} merge failed:${error.message}`);
+                    core.info('merge failed');
                     const { data: currentPulls } = yield octokit.rest.pulls.list({
                         owner,
                         repo

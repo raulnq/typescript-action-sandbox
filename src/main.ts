@@ -41,8 +41,7 @@ export async function run(): Promise<void> {
         const newMasterSha = await merge(currentBranch, nextBranch)
         core.info(`new sha ${newMasterSha}`)
       } catch (error) {
-        if (error instanceof Error)
-          core.info(`${nextBranch} merge failed:${error.message}`)
+        core.info('merge failed')
 
         const {data: currentPulls} = await octokit.rest.pulls.list({
           owner,
