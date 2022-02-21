@@ -640,7 +640,7 @@ function run() {
                 }
                 catch (error) {
                     if (error instanceof Error)
-                        core.setFailed(`${nextBranch} merge failed::${error.message}`);
+                        core.info(`${nextBranch} merge failed::${error.message}`);
                     const { data: currentPulls } = yield octokit.rest.pulls.list({
                         owner,
                         repo
