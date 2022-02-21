@@ -641,10 +641,25 @@ function run() {
                 catch (error) {
                     if (error instanceof Error)
                         core.setFailed(`${nextBranch} merge failed::${error.message}`);
-                    /*const { data: currentPulls } = await octokit.rest.pulls.list({
-                      owner,
-                      repo,
-                    });*/
+                    const { data: currentPulls } = yield octokit.rest.pulls.list({
+                        owner,
+                        repo
+                    });
+                    const currentPull = currentPulls.find(pull => {
+                        return pull.head.ref === currentBranch && pull.base.ref === nextBranch;
+                    });
+                    if (!currentPull) {
+                        const { data: response } = yield octokit.rest.repos.compareCommits({
+                            owner,
+                            repo,
+                            base: nextBranch,
+                            head: currentBranch,
+                            page: 1,
+                            per_page: 1
+                        });
+                        const hasContentDifference = response.files !== undefined && response.files.length > 0;
+                        core.info(`hasContentDifference ${hasContentDifference}`);
+                    }
                 }
                 core.setOutput('from-branch', currentBranch);
                 core.setOutput('to-branch', nextBranch);
